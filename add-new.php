@@ -1,10 +1,11 @@
 <?php
-include('header.php');
+include('./include/header.php');
+
 ?>
 
 <div class="container">
     <div class="my-5">
-        <a href="http://arif/php/todo/">Home</a>
+        <a href="http://arif/php/todo/">Home</a> 
     </div>
     <form class="form" action="add-new-action.php" method="POST">
         <div class="mb-3">
@@ -70,8 +71,8 @@ include('header.php');
                     response = JSON.parse(response);
                     $(".error").html("");
                     if (response.success) {
+                        $(location).attr('href', 'index.php');                        
                         $(".form")[0].reset();
-                        $(location).attr('href', 'http://arif/php/todo/');                        
                     } else {
                         Object.entries(response.message).forEach(([key, value]) => {
                             $(`#error-${key}`).html(value);
@@ -84,5 +85,5 @@ include('header.php');
 </script>
 
 <?php
-include('footer.php');
+include('./include/footer.php');
 ?>

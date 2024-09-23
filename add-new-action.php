@@ -4,6 +4,8 @@ $response = [
     "success" => false,
     "message" => []
 ];
+session_start();
+$userID = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -29,10 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode($response);
         exit;
     } else {
-        $sql = "INSERT INTO tasks (title, area, stage, start_date, end_date, labor_cost) VALUES (?, ?, ?, ?, ?, ?)";
+
+        $sql = "INSERT INTO tasks ( user_id,title, area, stage, start_date, end_date, labor_cost) VALUES (?,?, ?, ?, ?, ?, ?)";
 
         if ($stmt = $connect->prepare($sql)) {
-            $stmt->bind_param("sssssd", $_POST['title'], $_POST['area'], $_POST['stage'], $_POST['start_date'], $_POST['end_date'], $_POST['labor_cost']);
+            $stmt->bind_param("isssssd", $userID, $_POST['title'],  $_POST['area'], $_POST['stage'], $_POST['start_date'], $_POST['end_date'], $_POST['labor_cost']);
 
             if ($stmt->execute()) {
                 $response['success'] = true;
@@ -53,11 +56,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $connect->close();
         exit;
-
     }
-
 }
-
-
-
-?>

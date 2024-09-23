@@ -1,14 +1,31 @@
 <?php
-include_once('header.php');
+include("./include/header.php");
 include_once('./db/config.php');
 
-$sql = 'SELECT * FROM tasks ORDER by end_date ASC';
-$result = $connect->query($sql);
+include "./helpers/session_managment.php";
+//redirectToCorrectPage();
+
+
+
+$userId = $_SESSION['user_id'];
+
+
+$sql = 'SELECT * FROM tasks WHERE user_id = ? ORDER BY end_date ASC';
+
+if ($stmt = $connect->prepare($sql)) {
+    $stmt->bind_param('i', $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+} else {
+    echo "Error preparing statement: " . $connect->error;
+}
 ?>
 
 <div class="container">
-    <div class="add-task my-4">
+    <div class="add-task my-4 text-end">
         <a href="./add-new.php" class="btn btn-primary">Add New</a>
+
     </div>
 
     <table width="100%">
@@ -41,7 +58,7 @@ $result = $connect->query($sql);
 
                     echo '<tr>
                         <td>' . $count . '</td>
-                        <td class="title text-start" data-title="'. $item['title'] . '">' . $item['title'] . '</td>
+                        <td class="title text-start" data-title="' . htmlspecialchars($item['title']) . '">' . $item['title'] . '</td>
                         <td style="background-color: ' . ($item['area'] == 'Design' ? "#56a8ff" : '#9d0000') . ';" class="text-white">' . ($item['area']) . '</td>
                         <td style="background-color: ' . ($item['stage'] == 'Meeting with Dev' ? "#9d0000" : '#56a8ff') . ';" class="text-white">' . ($item['stage']) . '</td>
                         <td>' . $start->format('d-m-Y') . '</td>
@@ -51,7 +68,7 @@ $result = $connect->query($sql);
                         <td>$' . $item['labor_cost'] . '</td>
                         <td>
                             <div class="progress position-relative" role="progressbar" aria-label="Basic example" aria-valuenow="' . $formatted_percentage . '" aria-valuemin="0" aria-valuemax="100">
-                              <span class="position-absolute w-100 text-center"> '. $formatted_percentage . '%</span> <div class="progress-bar" style="width:' . $formatted_percentage . '%"></div>
+                              <span class="position-absolute w-100 text-center"> ' . $formatted_percentage . '%</span> <div class="progress-bar" style="width:' . $formatted_percentage . '%"></div>
                             </div>
                         </td>
                         <td>
@@ -90,8 +107,9 @@ $result = $connect->query($sql);
 </div>
 
 <?php
-include_once('footer.php');
+include('./include/footer.php');
 ?>
+
 
 <script>
     $(document).ready(function() {
