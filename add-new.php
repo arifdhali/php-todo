@@ -1,6 +1,8 @@
 <?php
 include('./include/header.php');
 
+include "./helpers/session_managment.php";
+redirectToCorrectPage();
 ?>
 
 <div class="container">

@@ -1,8 +1,7 @@
 <?php
 include("./db/config.php");
-
-session_start();
-
+include("./helpers/session_managment.php");
+initializeSession();
 
 $response = [
     'status' => false,
@@ -44,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (password_verify($password, $user['user_password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['user_name'];
+                $_SESSION['user_image'] = $user['user_image'];
                 $response['status'] = true;
                 $response['message'] = "User logged in successfully";
                 $response['redirect'] = "index.php";
@@ -62,4 +62,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo json_encode($response);
     $connect->close();
 }
-?>

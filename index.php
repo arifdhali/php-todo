@@ -3,12 +3,9 @@ include("./include/header.php");
 include_once('./db/config.php');
 
 include "./helpers/session_managment.php";
-//redirectToCorrectPage();
-
-
+redirectToCorrectPage();
 
 $userId = $_SESSION['user_id'];
-
 
 $sql = 'SELECT * FROM tasks WHERE user_id = ? ORDER BY end_date ASC';
 
@@ -23,8 +20,15 @@ if ($stmt = $connect->prepare($sql)) {
 ?>
 
 <div class="container">
-    <div class="add-task my-4 text-end">
-        <a href="./add-new.php" class="btn btn-primary">Add New</a>
+    <div class="add-task my-4 d-flex justify-content-between align-items-center">
+        <div>
+            <button class="btn btn-success">All</button>
+            <button class="btn btn-secondary">Complete</button>
+            <button class="btn btn-warning">Due</button>
+        </div>
+        <div>
+            <a href="./add-new.php" class="btn btn-primary">Add New</a>
+        </div>
 
     </div>
 
@@ -134,7 +138,6 @@ include('./include/footer.php');
                     let result = JSON.parse(response);
                     if (result.status) {
                         console.log('Task deleted successfully');
-                        // Reload the page or table after deletion
                         location.reload();
                     } else {
                         console.log('Failed to delete task');

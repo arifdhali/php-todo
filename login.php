@@ -29,7 +29,7 @@
     <?php
     include("./db/config.php");
     include("./helpers/session_managment.php");
-    session_start();
+    initializeSession();
 
     ?>
 
@@ -45,14 +45,14 @@
 
                                 <form method="POST" class="form">
                                     <div class="form-outline form-white mb-4">
-                                        <label class="form-label text-start" for="typeEmailX">Email</label>
-                                        <input type="email" id="typeEmailX" name="email" class="form-control form-control-lg" />
+                                        <label class="form-label text-start"  for="typeEmailX">Email</label>
+                                        <input type="email" id="typeEmailX" placeholder="Enter your email" name="email" class="form-control form-control-lg" />
                                         <p class="mt-1 error error-email text-danger fs-6 text-start"></p>
                                     </div>
 
                                     <div class="form-outline form-white mb-4">
                                         <label class="form-label text-start" for="typePasswordX">Password</label>
-                                        <input type="password" id="typePasswordX" name="password" class="form-control form-control-lg" />
+                                        <input type="password" placeholder="Enter your password" id="typePasswordX" name="password" class="form-control form-control-lg" />
                                         <p class="mt-1 error error-password text-danger fs-6 text-start"></p>
                                     </div>
                                     <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>

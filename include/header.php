@@ -28,33 +28,46 @@
 <body>
     <?php
     session_start();
-    $user_name = $_SESSION['user_name'] ?? null
+    $user_name = $_SESSION['user_name'] ?? null;
+    $user_img =  $_SESSION['user_image'] ?? null;
 
     ?>
-    <div class="container py-5">
+    <div class="container pb-5 pt-3">
         <div class="row align-items-center justify-content-between">
-            <div class="col-md-6">
+            <div class="col-md-6 ">
                 <h2><?= $user_name ?></h2>
+                
             </div>
-            <div class="col-md-6 text-end"><button class="btn btn-warning" id="logout">Log out</button></div>
+            <div class="col-md-6 text-end d-flex align-items-center justify-content-end">
+                <img src="<?= $user_img  ?>" alt="<?= $user_name ?>" class="user_img">
+                <button class="btn btn-warning ms-4" id="logout">Log out</button>
+            </div>
         </div>
     </div>
 
     <script>
         $(document).ready(function() {
             $("#logout").on("click", function() {
-                let confirmation = confirm("Are you sure you want to log out");
+                let confirmation = confirm("Are you sure you want to log out?");
                 if (confirmation) {
                     $.ajax({
                         url: "logout-action.php",
-                        method: "DELETE",
+                        method: "POST",
+                        data: {
+                            _method: 'DELETE'
+                        },
                         success: function(res) {
-                            res = JSON.parse(res);                            
-                            if (res.success) {
-                                $(location).attr('href', 'login.php');                                
+                            res = JSON.parse(res);
+                            if (res.status) {
+                                $(location).attr('href', 'login.php');
+                            } else {
+                                alert(res.message);
                             }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error:", error);
                         }
-                    })
+                    });
                 }
             });
         });

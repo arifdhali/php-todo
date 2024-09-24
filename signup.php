@@ -1,5 +1,6 @@
 <?php
 include("./db/config.php");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,34 +35,48 @@ include("./db/config.php");
                 <div class="card bg-dark text-white" style="border-radius: 1rem;">
                     <div class="card-body p-5 text-center">
 
-                        <div class="pb-5">
+                        <div class="pb-3">
                             <h2 class="fw-bold mb-4 ">Create new account</h2>
                             <form action="signup-action.php" method="POST" class="form">
+                                <div class="form-outline form-white mb-4 profile-image">
+                                    <label class="form-label text-start">Profile image</label>
+                                    <div class="input-group mb-3">
+                                        <input type="file" class="form-control" name="profile_img" id="profile_img">
+                                        <label class="input-group-text" for="inputGroupFile02">Upload</label>
+                                    </div>
+                                    <div class="mx-auto mb-3">
+                                        <img id="preview_img" src="" alt="Profile image">
+                                    </div>
+
+                                    <p class="mt-1 error error-profile text-danger fs-6 text-start"></p>
+                                </div>
                                 <div class="form-outline form-white mb-4">
                                     <label class="form-label text-start" for="username">User name</label>
-                                    <input type="text" id="username" name="username" class="form-control form-control-lg" />
+                                    <input placeholder="Enter username" type="text" id="username" name="username" class="form-control form-control-lg" />
                                     <p class="mt-1 error error-username text-danger fs-6 text-start"></p>
 
                                 </div>
                                 <div class="form-outline form-white mb-4">
                                     <label class="form-label text-start" for="usermobile">Mobile</label>
-                                    <input type="tel" id="usermobile" name="mobile" class="form-control form-control-lg" maxlength="15" minlength="10" />
+                                    <input  placeholder="Enter mobile" type="tel" id="usermobile" name="mobile" class="form-control form-control-lg" maxlength="15" minlength="10" />
                                     <p class="mt-1 error error-mobile text-danger fs-6 text-start"></p>
                                 </div>
                                 <div class="form-outline form-white mb-4">
                                     <label class="form-label text-start" for="typeEmailX">Email</label>
-                                    <input type="text" id="typeEmailX" name="email" class="form-control form-control-lg" />
+                                    <input  placeholder="Enter email" type="text" id="typeEmailX" name="email" class="form-control form-control-lg" />
                                     <p class="mt-1 error error-email text-danger fs-6 text-start"></p>
                                 </div>
 
                                 <div class="form-outline form-white mb-4">
-                                    <label class="form-label text-start" for="typePasswordX">Password</label>
+                                    <label class="form-label text-start"   for="typePasswordX">Password</label>
                                     <div class="position-relative">
-                                        <input type="password" id="typePasswordX" name="password" class="form-control form-control-lg" />
+                                        <input type="password" id="typePasswordX" placeholder="Enter password" name="password" class="form-control form-control-lg" />
                                         <i class="text-center password-check fa-regular fa-eye-slash position-absolute top-50 translate-middle text-dark" style="right: 8px;" role="button"></i>
                                     </div>
                                     <p class="mt-1 error error-password text-danger fs-6 text-start"></p>
                                 </div>
+
+                                <hr>
                                 <button class="btn btn-outline-light btn-lg px-5" type="submit">Sign up</button>
                             </form>
                         </div>
@@ -90,6 +105,27 @@ include("./db/config.php");
                 $(".error-mobile").html('');
             }
         });
+        let profileImgInput = $("#profile_img");
+        let previewImg = $("#preview_img");
+
+        profileImgInput.on("change", function(e) {
+            const file = e.target.files[0];
+
+            const reader = new FileReader();
+
+            reader.addEventListener("load", function() {
+                previewImg.attr("src", reader.result);
+            });
+
+            if (file) {
+                reader.readAsDataURL(file);
+                $(".upload-btn").css("display", "none");
+            } else {
+                console.log('please upload a file');
+                $(".upload-btn").css("display", "block");
+            }
+        });
+
 
 
         var passwordInput = $('#typePasswordX');
@@ -100,14 +136,17 @@ include("./db/config.php");
         // Form submission
         $('.form').on('submit', function(e) {
             e.preventDefault();
-            let data = $(this).serialize();
+            let formD = new FormData(this);
             $.ajax({
                 url: "signup-action.php",
                 method: 'POST',
-                data: data,
+                data: formD,
+                contentType: false,
+                processData: false,
                 success: function(response) {
                     var response = JSON.parse(response);
                     $(`.error`).html('');
+                    console.log(response);
                     if (response.status) {
                         $(location).attr('href', 'login.php');
                         $(".form")[0].reset();

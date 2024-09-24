@@ -1,12 +1,17 @@
 <?php
-include_once("./helpers/session_managment.php");
-session_start();
-if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
-    session_destroy();
-    $response = [
-        'success' => true,
-        'message' => 'Session destroyed successfully'
-    ];
+include("./helpers/session_managment.php");
+initializeSession();
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['_method']) && $_POST['_method'] === 'DELETE') {
+        session_destroy();
+        $_SESSION = [];
+        $response['status'] = true;
+        $response['message'] = 'Logout successful';
+    } else {
+        $response['status'] = false;
+        $response['message'] = 'Invalid request';
+        exit;
+    }
     echo json_encode($response);
 }

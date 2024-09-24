@@ -1,10 +1,12 @@
 <?php
 include "./db/config.php";
+include("./helpers/session_managment.php");
+initializeSession();
+
 $response = [
     "success" => false,
     "message" => []
 ];
-session_start();
 $userID = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

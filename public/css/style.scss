@@ -89,6 +89,27 @@ label {
     margin: 0;
     line-height: 1.1;
 }
-.fa-eye{
-    width: 20px;    
+.fa-eye {
+    width: 20px;
+}
+.profile-image {
+    img {
+        width: 150px;
+        height: 150px;
+        border-radius: 100%;
+        object-fit: cover;
+    }
+}
+
+.user_img {
+    object-fit: cover;
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+}
+
+input{
+    &::placeholder{
+        font-size: 14px;
+    }
 }
