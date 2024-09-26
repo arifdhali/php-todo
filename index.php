@@ -2,12 +2,14 @@
 include("./include/header.php");
 include_once('./db/config.php');
 
-include "./helpers/session_managment.php";
-redirectToCorrectPage();
-
 $userId = $_SESSION['user_id'];
 
-$sql = 'SELECT * FROM tasks WHERE user_id = ? ORDER BY end_date ASC';
+$sql = 'SELECT T.*, TN.task_status
+        FROM tasks T
+        LEFT JOIN task_notification TN ON T.id = TN.task_id
+        WHERE T.user_id = ?
+        ORDER BY T.end_date ASC
+';
 
 if ($stmt = $connect->prepare($sql)) {
     $stmt->bind_param('i', $userId);
@@ -21,11 +23,7 @@ if ($stmt = $connect->prepare($sql)) {
 
 <div class="container">
     <div class="add-task my-4 d-flex justify-content-between align-items-center">
-        <div>
-            <button class="btn btn-success">All</button>
-            <button class="btn btn-secondary">Complete</button>
-            <button class="btn btn-warning">Due</button>
-        </div>
+
         <div>
             <a href="./add-new.php" class="btn btn-primary">Add New</a>
         </div>
@@ -35,7 +33,7 @@ if ($stmt = $connect->prepare($sql)) {
     <table width="100%">
         <thead>
             <tr>
-                <th>Task ID</th>
+                <th>ID</th>
                 <th class="text-start">Title</th>
                 <th>Area</th>
                 <th>Stages</th>
@@ -61,25 +59,33 @@ if ($stmt = $connect->prepare($sql)) {
                     $formatted_percentage = number_format($progress_percentage);
 
                     echo '<tr>
-                        <td>' . $count . '</td>
-                        <td class="title text-start" data-title="' . htmlspecialchars($item['title']) . '">' . $item['title'] . '</td>
-                        <td style="background-color: ' . ($item['area'] == 'Design' ? "#56a8ff" : '#9d0000') . ';" class="text-white">' . ($item['area']) . '</td>
-                        <td style="background-color: ' . ($item['stage'] == 'Meeting with Dev' ? "#9d0000" : '#56a8ff') . ';" class="text-white">' . ($item['stage']) . '</td>
-                        <td>' . $start->format('d-m-Y') . '</td>
-                        <td style="color:' . ($total_duration <= 2 ? 'red' : 'green') . ';">' . $end->format('d-m-Y') . '
-                            <i role="button" class="fa-solid fa-circle-info" data-bs-toggle="tooltip" data-bs-placement="top" title="You have ' . $total_duration . ' days left"></i>
-                        </td>
-                        <td>$' . $item['labor_cost'] . '</td>
-                        <td>
-                            <div class="progress position-relative" role="progressbar" aria-label="Basic example" aria-valuenow="' . $formatted_percentage . '" aria-valuemin="0" aria-valuemax="100">
-                              <span class="position-absolute w-100 text-center"> ' . $formatted_percentage . '%</span> <div class="progress-bar" style="width:' . $formatted_percentage . '%"></div>
-                            </div>
-                        </td>
-                        <td>
-                            <a href="edit.php?id=' . $item['id'] . '"><i class="fa-solid fa-pen-to-square"></i></a>
-                            <i data-id="' . $item['id'] . '" class="fa-solid fa-trash deleteTasks" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i>
-                        </td>
-                    </tr>';
+                    <td>' . $count . '</td>
+                    <td class="title text-start" data-title="' . htmlspecialchars($item['title']) . '">' . $item['title'] . '</td>
+                    <td style="background-color: ' . ($item['area'] == 'Design' ? "#56a8ff" : '#9d0000') . ';" class="text-white">' . $item['area'] . '</td>
+                    <td style="background-color: ' . ($item['stage'] == 'Meeting with Dev' ? "#9d0000" : '#56a8ff') . ';" class="text-white">' . $item['stage'] . '</td>
+                    <td>' . $start->format('d-m-Y') . '</td>
+                    <td style="color:' . ($total_duration <= 2 ? 'red' : 'green') . ';">' . $end->format('d-m-Y') . '
+                        <i role="button" class="fa-solid fa-circle-info" data-bs-toggle="tooltip" data-bs-placement="top" title="You have ' . $total_duration . ' days left"></i>
+                    </td>
+                    <td>$' . $item['labor_cost'] . '</td>
+                    <td>
+                        <div class="progress position-relative" role="progressbar" aria-label="Basic example" aria-valuenow="' . $formatted_percentage . '" aria-valuemin="0" aria-valuemax="100">
+                            <span class="position-absolute w-100 text-center">' . $formatted_percentage . '%</span>
+                            <div class="progress-bar" style="width:' . $formatted_percentage . '%"></div>
+                        </div>
+                    </td>
+                   <td>' .
+                        ($item['task_status'] == 'Complete' ?
+                            '<button class="btn btn-success">' . htmlspecialchars($item['task_status']) . '</button> 
+                            <a href="task-details.php?id=' . $item['id'] . '"><i class="fa-solid fa-eye"></i></a>
+                            ' :
+                            '<a href="edit.php?id=' . $item['id'] . '"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <i  data-id="' . $item['id'] . '" data-title="' . $item['title'] . '" class="title fa-solid fa-trash deleteTasks" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i> '
+                    ) .
+                        '</td>
+
+                </tr>';
+
                     $count++;
                 } ?>
             <?php } else { ?>
@@ -122,7 +128,7 @@ include('./include/footer.php');
         // Trigger delete modal
         $(".deleteTasks").on('click', function() {
             taskID = $(this).attr("data-id");
-            taskTitle = $('.title').attr("data-title");
+            taskTitle = $(this).attr("data-title");
             $(".modal-data").text(`${taskTitle}`);
         });
 

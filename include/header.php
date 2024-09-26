@@ -27,20 +27,89 @@
 
 <body>
     <?php
-    session_start();
+    include "./db/config.php";
+
+    include "./helpers/session_managment.php";
+    redirectToCorrectPage();
     $user_name = $_SESSION['user_name'] ?? null;
     $user_img =  $_SESSION['user_image'] ?? null;
+    $userID = $_SESSION['user_id'];
+
+    // GET NOTIFICATIONS
+    $notiSql = "SELECT T.id, T.title,TN.task_status
+    FROM tasks T
+    JOIN task_notification TN ON TN.task_id = T.id
+    WHERE T.user_id = ? AND TN.task_id IS NOT NULL
+    GROUP BY T.id, T.title 
+    ORDER BY TN.task_c_date DESC
+    LIMIT 10
+    ";
+
+    $stmt = $connect->prepare($notiSql);
+    if ($stmt) {
+        $stmt->bind_param('i', $userID);
+        $stmt->execute();
+        $notifcation = $stmt->get_result();
+    }
 
     ?>
-    <div class="container pb-5 pt-3">
-        <div class="row align-items-center justify-content-between">
-            <div class="col-md-6 ">
-                <h2><?= $user_name ?></h2>
-                
-            </div>
-            <div class="col-md-6 text-end d-flex align-items-center justify-content-end">
-                <img src="<?= $user_img  ?>" alt="<?= $user_name ?>" class="user_img">
-                <button class="btn btn-warning ms-4" id="logout">Log out</button>
+    <div class="py-3 mb-5 shadow-lg">
+        <div class="container">
+            <div class="row  align-items-center justify-content-between">
+                <div class="col-md-5 ">
+                    <h2><a href="index.php">PHP</a></h2>
+                </div>
+
+
+                <div class="col-md-5 text-end d-flex  align-items-center justify-content-end top-menu">
+                    <?php if ($notifcation->num_rows) { ?>
+                        <div class="dropdown ">
+                            <div class=" dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <i class="fa-regular fa-bell bg-warning">
+                                </i>
+
+                                <span id="notification-count" class="notification-count bg-dark text-white">
+                                    <?= $notifcation->num_rows ?>
+                                </span>
+
+                            </div>
+                            <div class="dropdown-menu p-0">
+                                <table class="table table-striped table-hover text-start m-0">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th class="text-start" style="width: 50%;">Title</th>
+                                            <th style="width: 25%;">Status</th>
+                                            <th style="width: 25%;">View</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        if ($notifcation) {
+                                            foreach ($notifcation as $item) {
+                                                echo '<tr>
+                                        <td valign="middle" class="text-start">' . $item['title'] . '</td>
+                                        <td valign="middle"><button class="btn btn-' . ($item['task_status'] == "Complete" ? "success" : "primary") . '">' . $item['task_status'] . '</button> </td>
+                                        <td valign="middle"><a href="task-details.php?id=' . ($item['id']) . '">View</a></td>
+                                    </tr>';
+                                            }
+                                        }
+                                        ?>
+                                    </tbody>
+
+
+                                </table>
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <div class="mx-4">
+                        <div>
+                            <img src="<?= $user_img  ?>" alt="<?= $user_name ?>" class="user_img">
+                            <?= $user_name ?>
+                        </div>
+                    </div>
+                    <!-- <button class="btn btn-warning" id="logout">Log out</button> -->
+                    <i class="fa-solid fa-right-from-bracket bg-success" id="logout" role="button"></i>
+                </div>
             </div>
         </div>
     </div>
@@ -70,5 +139,6 @@
                     });
                 }
             });
+
         });
     </script>
