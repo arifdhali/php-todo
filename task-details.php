@@ -6,7 +6,7 @@ $userID = $_SESSION['user_id'];
 $username = $_SESSION['user_name'];
 
 if (isset($_GET['id'])) {
-    $taskID = $_GET['id'];
+    $taskID = $_GET['id'];    
     $sql = '
     SELECT T.id,T.title, T.start_date, T.end_date, T.labor_cost , TN.task_c_date
     FROM tasks T 
@@ -20,14 +20,12 @@ if (isset($_GET['id'])) {
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             $task = $result->fetch_assoc();
-        } else {
-            echo "No task found.";
         }
     } else {
         echo "Error preparing statement.";
     }
 } else {
-    echo "Task ID not provided.";
+  header("Location: index.php");
 }
 ?>
 
@@ -35,14 +33,14 @@ if (isset($_GET['id'])) {
     <table class="table table-hover">
         <thead class="table-dark">
             <tr>
-                <th style="width: 10%;" scope="col">Task ID</th>
-                <th style="width: 27%;" scope="col">Username</th>
-                <th style="width: 20%;" scope="col">Title</th>
-                <th style="width: 10%;" scope="col">Start Date</th>
-                <th style="width: 10%;" scope="col">Closed Date</th>
-                <th style="width: 10%;" scope="col">Closed Time</th>
-                <th style="width: 17%;" scope="col">Labour Cost</th>
-                <th style="width: 10%;" scope="col">Invoice</th>
+                <th class="text-white" style="width: 10%;" scope="col">Task ID</th>
+                <th class="text-white" style="width: 27%;" scope="col">Username</th>
+                <th class="text-white" style="width: 20%;" scope="col">Title</th>
+                <th class="text-white" style="width: 10%;" scope="col">Start Date</th>
+                <th class="text-white" style="width: 10%;" scope="col">Closed Date</th>
+                <th class="text-white" style="width: 10%;" scope="col">Closed Time</th>
+                <th class="text-white" style="width: 17%;" scope="col">Labour Cost</th>
+                <th class="text-white" style="width: 10%;" scope="col">Invoice</th>
             </tr>
         </thead>
         <tbody>

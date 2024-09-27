@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 24, 2024 at 12:24 PM
+-- Generation Time: Sep 27, 2024 at 06:53 AM
 -- Server version: 8.0.27
 -- PHP Version: 7.1.33
 
@@ -38,26 +38,40 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `end_date` date DEFAULT NULL,
   `labor_cost` decimal(10,0) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `user_id_parent` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `tasks`
 --
 
 INSERT INTO `tasks` (`id`, `user_id`, `title`, `area`, `stage`, `start_date`, `end_date`, `labor_cost`) VALUES
-(15, 0, 'Qui blanditiis eos ', 'Design', 'Planning & Costing', '2024-09-18', '2024-09-21', '231231'),
-(9, 0, 'Neque reprehenderit', 'Development', 'Planning & Costing', '2024-09-14', '2024-09-24', '1001'),
-(10, 0, 'Officia impedit ali', 'Design', 'Meeting with Dev', '2024-09-20', '2024-10-31', '12222'),
-(17, 0, 'Ut dolor tenetur mag', 'Design', 'Planning & Costing', '2024-09-21', '2024-09-18', '321'),
-(19, 1, 'Qui esse eveniet e', 'Development', 'Meeting with Dev', '2024-09-24', '2024-09-30', '2111'),
-(21, 2, 'Praesentium praesent', 'Development', 'Meeting with Dev', '2024-09-24', '2024-10-11', '32322'),
-(22, 3, 'ACTS', 'Design', 'Planning & Costing', '2024-09-23', '2024-09-30', '400'),
-(23, 1, 'Commodi sint dolorum', 'Development', 'Meeting with Dev', '2024-09-23', '2024-09-27', '1211'),
-(24, 2, 'Ex eos anim exceptu', 'Development', 'Meeting with Dev', '2024-09-24', '2024-09-30', '1001'),
-(25, 2, 'Native E-commerce', 'Development', 'Meeting with Dev', '2024-09-24', '2024-09-27', '12222'),
-(27, 1, 'Et quasi voluptatem', 'Development', 'Planning & Costing', '2024-09-25', '2024-09-28', '322'),
-(28, 22, 'Calculus', 'Design', 'Planning & Costing', '2024-09-24', '2024-09-25', '2310');
+(17, 1, 'Enim corrupti dolor', 'Design', 'Meeting with Dev', '2024-09-28', '2024-09-30', '1231'),
+(18, 1, 'Odio perspiciatis c', 'Development', 'Meeting with Dev', '2024-09-28', '2024-10-02', '32');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `task_notification`
+--
+
+DROP TABLE IF EXISTS `task_notification`;
+CREATE TABLE IF NOT EXISTS `task_notification` (
+  `notification_id` int NOT NULL AUTO_INCREMENT,
+  `task_id` int NOT NULL,
+  `task_c_date` datetime NOT NULL,
+  `task_status` enum('Progress','Due','Complete') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`notification_id`),
+  KEY `fk_task_notification_parent` (`task_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `task_notification`
+--
+
+INSERT INTO `task_notification` (`notification_id`, `task_id`, `task_c_date`, `task_status`) VALUES
+(9, 17, '2024-09-27 12:20:37', 'Complete'),
+(10, 18, '2024-09-27 12:21:12', 'Complete');
 
 -- --------------------------------------------------------
 
@@ -74,15 +88,30 @@ CREATE TABLE IF NOT EXISTS `users` (
   `user_password` varchar(100) NOT NULL,
   `user_image` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `user_name`, `user_email`, `user_mobile`, `user_password`, `user_image`) VALUES
-(22, 'duvuqaqahe', 'kezetoz@mailinator.com', '312321312312312', '$2y$10$lfvfz0743sQsHHygmlRXfuo21zKqT6AfSw6bA2Wq8O.X40SCx9MPu', './storage/users/2024-09-24_11-26_user-pexels-pixabay-33545.jpg'),
 (1, 'Arif', 'arif@gmail.com', '2312321321312', '$2y$10$5.1L6cHfeIXzUttABFY66ezlvPsHbwW31hZOacFgHB3CD13pRAMki', './storage/users/2024-09-24_11-22_user-pexels-pixabay-33545.jpg');
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `tasks`
+--
+ALTER TABLE `tasks`
+  ADD CONSTRAINT `user_id_parent` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `task_notification`
+--
+ALTER TABLE `task_notification`
+  ADD CONSTRAINT `fk_task_notification_parent` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

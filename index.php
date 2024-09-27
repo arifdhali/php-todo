@@ -4,6 +4,8 @@ include_once('./db/config.php');
 
 $userId = $_SESSION['user_id'];
 
+
+
 $sql = 'SELECT T.*, TN.task_status
         FROM tasks T
         LEFT JOIN task_notification TN ON T.id = TN.task_id
@@ -30,7 +32,7 @@ if ($stmt = $connect->prepare($sql)) {
 
     </div>
 
-    <table width="100%">
+    <table width="100%" class="table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -76,8 +78,10 @@ if ($stmt = $connect->prepare($sql)) {
                     </td>
                    <td>' .
                         ($item['task_status'] == 'Complete' ?
-                            '<button class="btn btn-success">' . htmlspecialchars($item['task_status']) . '</button> 
+                            '
                             <a href="task-details.php?id=' . $item['id'] . '"><i class="fa-solid fa-eye"></i></a>
+                            <i class="fa-solid fa-circle-check text-success"></i>
+                           <i  data-id="' . $item['id'] . '" data-title="' . $item['title'] . '" class="title fa-solid fa-trash deleteTasks" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i>
                             ' :
                             '<a href="edit.php?id=' . $item['id'] . '"><i class="fa-solid fa-pen-to-square"></i></a>
                             <i  data-id="' . $item['id'] . '" data-title="' . $item['title'] . '" class="title fa-solid fa-trash deleteTasks" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i> '

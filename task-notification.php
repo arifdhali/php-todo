@@ -3,7 +3,7 @@
 include "./db/config.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    date_default_timezone_set('Asia/Kolkata'); 
+    // date_default_timezone_set('Asia/Kolkata'); 
     $id =  $_POST['task_id'];
     $task_c_date = $_POST['task_c_date'];
 

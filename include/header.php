@@ -77,9 +77,9 @@
                                 <table class="table table-striped table-hover text-start m-0">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th class="text-start" style="width: 50%;">Title</th>
-                                            <th style="width: 25%;">Status</th>
-                                            <th style="width: 25%;">View</th>
+                                            <th class="text-start  text-white" style="width: 50%;">Title</th>
+                                            <th class=" text-white" style="width: 25%;">Status</th>
+                                            <th class=" text-white" style="width: 25%;">View</th>
                                         </tr>
                                     </thead>
                                     <tbody>

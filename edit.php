@@ -29,7 +29,7 @@ if (isset($_GET['id'])) {
         <form method="POST" class="send_id">
             <input type="hidden" name="task_id" value="<?php echo $taskID; ?>">
             <input type="hidden" id="dateTime" name="task_c_date">
-            <button class="btn btn-success" type="submit">Complete</button>
+            <button class="btn btn-success" type="submit">Complete Task</button>
         </form>
 
     </div>
@@ -86,8 +86,6 @@ if (isset($_GET['id'])) {
         let dateT = $("#dateTime");
 
         setInterval(() => {
-
-
             let now = new Date();
             let year = now.getFullYear();
             let month = String(now.getMonth() + 1).padStart(2, '0');
@@ -96,11 +94,8 @@ if (isset($_GET['id'])) {
             let minutes = String(now.getMinutes()).padStart(2, '0');
             let seconds = String(now.getSeconds()).padStart(2, '0');
             let localTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
             dateT.val(localTime);
-
-
-        }, 1000)
+        }, 0)
 
         // Form submission
         $(".form").on('submit', function(e) {
