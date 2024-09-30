@@ -30,7 +30,8 @@
     include "./db/config.php";
 
     include "./helpers/session_managment.php";
-    redirectToCorrectPage();
+    redirectIfNotAuthenticated();
+    
     $user_name = $_SESSION['user_name'] ?? null;
     $user_img =  $_SESSION['user_image'] ?? null;
     $userID = $_SESSION['user_id'];

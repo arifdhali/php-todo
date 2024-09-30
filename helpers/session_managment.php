@@ -1,10 +1,7 @@
 <?php
-
-if (session_status() == PHP_SESSION_NONE) {    
+if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-define('SESSION_TIMEOUT', 600);
 
 function initializeSession()
 {
@@ -13,17 +10,34 @@ function initializeSession()
     }
 }
 
-// Function to check session validity and redirect if expired
-function redirectToCorrectPage()
+function isAuthenticated()
 {
     initializeSession();
+    return isset($_SESSION['user_id']);
+}
 
-    if (!isset($_SESSION['user_id']) || (time() - $_SESSION['time_stamp']) > SESSION_TIMEOUT) {
-        session_unset();
-        session_destroy();
-        header("location: login.php");
-        exit();
-    } else {
-        $_SESSION['time_stamp'] = time();
+function redirectIfNotAuthenticated()
+{
+    if (!isAuthenticated()) {
+        if (!headers_sent()) {
+            header("Location: login.php");
+            exit();
+        }
+    }
+}
+
+function checkSessionExpiration()
+{
+    $inactive = 60 * 60 * 24; 
+    if (isset($_SESSION['time_stamp'])) {
+        $session_life = time() - $_SESSION['time_stamp'];
+        if ($session_life > $inactive) {
+            session_unset();
+            session_destroy();
+            if (!headers_sent()) {
+                header("Location: login.php");
+                exit();
+            }
+        }
     }
 }

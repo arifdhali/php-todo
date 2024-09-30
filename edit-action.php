@@ -1,8 +1,5 @@
 <?php
 include("./db/config.php");
-include("./helpers/session_managment.php");
-initializeSession();
-
 $response = [
     'success' => false,
     'message' => []
@@ -13,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $userID = $_SESSION['user_id'];
     $taskID = $_POST['task_id'];
 
-    // Validation
+    // Validation    
     foreach ($_POST as $key => $value) {
         if (empty($value)) {
             $response['message'][$key] = ucfirst(str_replace('_', ' ', $key)) . ' is required';

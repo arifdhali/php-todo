@@ -29,7 +29,7 @@
     <?php
     include("./db/config.php");
     include("./helpers/session_managment.php");
-    initializeSession();
+    //redirectIfNotAuthenticated();
 
     ?>
 

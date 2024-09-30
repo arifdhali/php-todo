@@ -1,8 +1,6 @@
 <?php
 include("./db/config.php");
 include("./helpers/session_managment.php");
-initializeSession();
-
 $response = [
     'status' => false,
     'message' => []
@@ -44,6 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['user_name'];
                 $_SESSION['user_image'] = $user['user_image'];
+                initializeSession();
+                
                 $response['status'] = true;
                 $response['message'] = "User logged in successfully";
                 $response['redirect'] = "index.php";
